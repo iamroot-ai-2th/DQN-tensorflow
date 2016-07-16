@@ -7,6 +7,8 @@ class Environment(object):
   def __init__(self, config):
     self.env = gym.make(config.env_name)
 
+    # screen_width, screen_height : local variable
+    # action_repeat, random_start : class member variable
     screen_width, screen_height, self.action_repeat, self.random_start = \
         config.screen_width, config.screen_height, config.action_repeat, config.random_start
 

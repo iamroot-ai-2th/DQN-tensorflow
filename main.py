@@ -33,11 +33,11 @@ if FLAGS.gpu_fraction == '':
   raise ValueError("--gpu_fraction should be defined")
 
 def calc_gpu_fraction(fraction_string):
-  idx, num = fraction_string.split('/')
+    idx, num = fraction_string.split('/') # idx:1, num:1
   idx, num = float(idx), float(num)
 
   fraction = 1 / (num - idx + 1)
-  print " [*] GPU : %.4f" % fraction
+  print " [*] GPU : %.4f" % fraction # 1.0000
   return fraction
 
 def main(_):
@@ -47,6 +47,7 @@ def main(_):
   with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
     config = get_config(FLAGS) or FLAGS
 
+    # config.env_type default : detail
     if config.env_type == 'simple':
       env = SimpleGymEnvironment(config)
     else:

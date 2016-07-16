@@ -13,19 +13,20 @@ class ReplayMemory:
 
     self.cnn_format = config.cnn_format
     self.memory_size = config.memory_size
-    self.actions = np.empty(self.memory_size, dtype = np.uint8)
-    self.rewards = np.empty(self.memory_size, dtype = np.integer)
-    self.screens = np.empty((self.memory_size, config.screen_height, config.screen_width), dtype = np.float16)
+    self.actions = np.empty(self.memory_size, dtype = np.uint8) # uint8 타입 memory_size 크기의 배열
+    self.rewards = np.empty(self.memory_size, dtype = np.integer) # integer 타입 memory_size 크기의 배열
+    self.screens = np.empty((self.memory_size, config.screen_height, config.screen_width), dtype = np.float16) # 3차원 배열, 계산용도로 추론...
     self.terminals = np.empty(self.memory_size, dtype = np.bool)
-    self.history_length = config.history_length
-    self.dims = (config.screen_height, config.screen_width)
-    self.batch_size = config.batch_size
+    self.history_length = config.history_length # default 4
+    self.dims = (config.screen_height, config.screen_width) # tuple
+    self.batch_size = config.batch_size # default 32
     self.count = 0
     self.current = 0
 
     # pre-allocate prestates and poststates for minibatch
     self.prestates = np.empty((self.batch_size, self.history_length) + self.dims, dtype = np.float16)
     self.poststates = np.empty((self.batch_size, self.history_length) + self.dims, dtype = np.float16)
+    # (screen_height, screen_width, batch_size, history_length)
 
   def add(self, screen, reward, action, terminal):
     assert screen.shape == self.dims
@@ -56,9 +57,9 @@ class ReplayMemory:
     # sample random indexes
     indexes = []
     while len(indexes) < self.batch_size:
-      # find random index 
+      # find random index
       while True:
-        # sample one index (ignore states wraping over 
+        # sample one index (ignore states wraping over
         index = random.randint(self.history_length, self.count - 1)
         # if wraps over current pointer, then get new one
         if index >= self.current and index - self.history_length < self.current:
@@ -69,7 +70,7 @@ class ReplayMemory:
           continue
         # otherwise use this index
         break
-      
+
       # NB! having index first is fastest in C-order matrices
       self.prestates[len(indexes), ...] = self.getState(index - 1)
       self.poststates[len(indexes), ...] = self.getState(index)

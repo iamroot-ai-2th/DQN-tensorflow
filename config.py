@@ -45,7 +45,7 @@ class DQNConfig(AgentConfig, EnvironmentConfig):
   pass
 
 class M1(DQNConfig):
-  backend = 'tf'
+  backend = 'tf' # tensorflow
   env_type = 'detail'
   action_repeat = 1
 
@@ -61,6 +61,7 @@ def get_config(FLAGS):
         config.cnn_format = 'NHWC'
       else:
         config.cnn_format = 'NCHW'
+        # NHWC:opencv, NCHW:cuda ...?
 
     if hasattr(config, k):
       setattr(config, k, v)
